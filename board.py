@@ -221,6 +221,32 @@ class Edge:
         string = f'Edge at ({self.coords[0]}, {self.coords[1]}) {road}' 
         return string
 
+    def road_is_buildable(self, road):
+        if not isinstance(self, Road):
+            return False
+        if self.road != None:
+            return False
+        
+        neighbors = [intersection.occupant for intersection in self.intersections]
+        neighbors = list(filter(lambda x: x != None, neighbors))
+
+        # Either neighbors is empty or does not have the road owner
+        if road.owner not in neighbors:
+            for intersection in self.intersections:
+                if intersection.occupant == None:
+                    for edge in intersection.surroundings['edges']:
+                        if edge.occupant == road.owner:
+                            return True
+            # If this loop ends without updating self.road and self.owner,
+            # the placement is not possible and an AssertionError will be thrown
+            if self.occupant == None:
+                return False
+        # Argument <road> is directly connected to a building owned by road.owner
+        else:
+            self.road = road
+            self.occupant = road.owner
+
+    
     def build_road(self, road):
         assert isinstance(road, Road), \
             'Argument <road> must be of the Road class'
@@ -433,9 +459,39 @@ class Player:
         self.board = board
         self.name = name
 
-    def road_coords(self) -> tuple:
-        road_coords_set = set()
+    def longest_road(self) -> tuple:
+        road_coord_set = set()
         for edge in self.board.edge_plot.values():
-            if edge.occupant.name == self.name:
-                road_coords_set.add(edge.coords)
-        
+            if edge.occupant == self:
+                road_coord_set.add(edge.coords)
+
+        road_lengths = set()
+        def exhaust_pathways(current_coord, coord_set, counter=1):
+            x, y = current_coord[0], current_coord[1]
+            possible_coords = (
+                (x+0.5,y+0.5),
+                (x+0.5,y-0.5),
+                (x-0.5,y+0.5),
+                (x-0.5,y-0.5),
+                (x+1,y),
+                (x-1,y)
+            )
+            matching_coords = set()
+            for coord in possible_coords:
+                if coord in coord_set:
+                    matching_coords.add(coord)
+
+            if not matching_coords:
+                road_lengths.add(counter)
+            else:
+                coord_set.remove(current_coord)
+                for coord in matching_coords:
+                    exhaust_pathways(coord, coord_set, counter+1)
+
+        for coord in road_coord_set:
+            local_coord_set = road_coord_set
+            local_coord_set.remove(coord)
+            exhaust_pathways(coord, local_coord_set)
+
+        return max(road_lengths)
+
