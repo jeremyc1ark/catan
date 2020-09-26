@@ -1,153 +1,67 @@
 import pytest
-from board import *
+from catan.core.board import Board
+from decorate_all_methods import decorate_all_methods
 
-def test_value_handler(value_handler_data):
-    for elem in value_handler_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            BoardChecker.value_handler(elem[0], elem[1])
+stage_testing = {
+    "make_feature_plot": None,
+    "give_intersections_tiles": None,
+    "give_intersections_intersections": None,
+    "give_intersections_edges": None,
+    "give_intersections_harbors": None
+}
 
-    for elem in value_handler_data['pass']:
-        BoardChecker.value_handler(elem[0], elem[1])
-
-def test_is_coord(is_coord_data):
-    for elem in is_coord_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            BoardChecker.is_coord(elem)
-
-    for elem in is_coord_data['pass']:
-        BoardChecker.is_coord(elem)
-
-def test_is_edge_coord(is_edge_coord_data):
-    for elem in is_edge_coord_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            BoardChecker.is_edge_coord(elem)
-
-    for elem in is_edge_coord_data['pass']:
-        BoardChecker.is_edge_coord(elem)
-
-def test_is_intersection_coord(is_intersection_coord_data):
-    for elem in is_intersection_coord_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            BoardChecker.is_intersection_coord(elem)
-
-    for elem in is_intersection_coord_data['pass']:
-        BoardChecker.is_intersection_coord(elem)
-
-def test_valid_tile_kind(valid_tile_kind_data):
-    for elem in valid_tile_kind_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            Tile.LocalChecker.valid_tile_kind(elem)
-
-    for elem in valid_tile_kind_data['pass']:
-        Tile.LocalChecker.valid_tile_kind(elem)
-
-def test_valid_tile_token(valid_tile_token_data):
-    for elem in valid_tile_token_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            Tile.LocalChecker.valid_tile_token(elem)
-
-    for elem in valid_tile_token_data['pass']:
-        Tile.LocalChecker.valid_tile_token(elem)
-
-def test_tile_init(tile_init_data):
-    for elem in tile_init_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            x = Tile(elem[0], elem[1], elem[2])
-
-    for elem in tile_init_data['pass']:
-            x = Tile(elem[0], elem[1], elem[2])
-            assert x.coords == elem[0]
-            assert x.kind == elem[1]
-            assert x.token == elem[2]
-
-def test_intersection_coords(intersection_coords_data):
-    for elem in intersection_coords_data:
-        x = Tile(elem[0][0], elem[0][1], elem[0][2])
-        assert len(x.intersection_coords()) == len(elem[1])
-        for coord in x.intersection_coords():
-            assert coord in elem[1]
-
-def test_edge_coords(edge_coords_data):
-    for elem in edge_coords_data:
-        x = Tile(elem[0][0], elem[0][1], elem[0][2])
-        assert len(x.edge_coords()) == len(elem[1])
-        for coord in x.edge_coords():
-            assert coord in elem[1]
-
-def test_tile_str(tile_str_data):
-    for elem in tile_str_data:
-        x = Tile(elem[0][0], elem[0][1], elem[0][2])
-        assert str(x) == elem[1]
-
-def test_harbor_init(harbor_init_data):
-    for elem in harbor_init_data['assert_raises']:
-        with pytest.raises(AssertionError):
-            x = Harbor(elem[0], elem[1])
-
-    for elem in harbor_init_data['pass']:
-        x = Harbor(elem[0], elem[1])
-
-def test_harbor_str(harbor_str_data):
-    for elem in harbor_str_data:
-        x = Harbor(elem[0][0], elem[0][1])
-        assert str(x) == elem[1]
-
-
-valid_tile_list = (
-    Tile((2,1), 'sheep', 6),
-    Tile((4,1), 'ore', 11),
-    Tile((1,2), 'desert', None),
-    Tile((3,2), 'wood', 5),
-    Tile((5,2), 'brick', 2),
-    Tile((2,3), 'wheat', 4),
-    Tile((4,3), 'ore', 9)
+stage_testing['make_feature_plot'] = Board.board_helpers.make_feature_plot(
+    (
+        Tile((2,1), 'sheep', 6),
+        Tile((4,1), 'ore', 11),
+        Tile((1,2), 'desert', None),
+        Tile((3,2), 'wood', 5),
+        Tile((5,2), 'brick', 2),
+        Tile((2,3), 'wheat', 4),
+        Tile((4,3), 'ore', 9)
+    )
 )
 
-valid_harbor_list = (
-    Harbor((1,3), {'kind': 'ore', 'quantity': 2}),
-    Harbor((2,3), {'kind': 'ore', 'quantity': 2}),
-    Harbor((5,3), {'kind': 'wheat', 'quantity': 2}),
-    Harbor((5,2), {'kind': 'wheat', 'quantity': 2}),
-    Harbor((0,2), {'kind': None, 'quantity': 3}),
-    Harbor((0,1), {'kind': None, 'quantity': 3})
+stage_testing['give_intersections_tiles'] = Board.board_helpers.give_intersections_tiles(
+    valid_tile_list, stage_testing['make_feature_plot']
 )
 
-overlap_tile_list = (
-    Tile((2,1), 'sheep', 6),
-    Tile((4,1), 'ore', 11),
-    Tile((1,2), 'desert', None),
-    Tile((3,2), 'wood', 5),
-    Tile((5,2), 'brick', 2),
-    Tile((2,3), 'wheat', 4),
-    Tile((4,2), 'ore', 9) # This overlaps
+stage_testing['give_intersections_intersections'] = Board.board_helpers.give_intersections_intersections(
+    stage_testing['give_intersections_tiles']
 )
+
+stage_testing['give_intersections_edges'] = Board.board_helpers.give_intersections_edges(
+    stage_testing['give_intersections_intersections']
+)
+
+stage_testing['give_intersections_harbors'] = Board.board_helpers.give_intersections_harbors(
+    stage_testing['give_intersections_edges'], 
+    (
+        Harbor((1,3), {'kind': 'ore', 'quantity': 2}),
+        Harbor((2,3), {'kind': 'ore', 'quantity': 2}),
+        Harbor((5,3), {'kind': 'wheat', 'quantity': 2}),
+        Harbor((5,2), {'kind': 'wheat', 'quantity': 2}),
+        Harbor((0,2), {'kind': None, 'quantity': 3}),
+        Harbor((0,1), {'kind': None, 'quantity': 3})
+    )
+)
+
 
 def test_check_overlap():
+    overlap_tile_list = (
+        Tile((2,1), 'sheep', 6),
+        Tile((4,1), 'ore', 11),
+        Tile((1,2), 'desert', None),
+        Tile((3,2), 'wood', 5),
+        Tile((5,2), 'brick', 2),
+        Tile((2,3), 'wheat', 4),
+        Tile((4,2), 'ore', 9) # This overlaps
+    )
+
     with pytest.raises(AssertionError):
         Board.board_helpers.check_overlap(overlap_tile_list)
     Board.board_helpers.check_overlap(valid_tile_list)
 
-def stage_testing(stage):
-    feature_plot = Board.board_helpers.make_feature_plot(valid_tile_list)
-    if stage == 'make_feature_plot':
-        return feature_plot
-
-    Board.board_helpers.give_intersections_tiles(valid_tile_list, feature_plot)
-    if stage == 'give_intersections_tiles':
-        return feature_plot
-
-    Board.board_helpers.give_intersections_intersections(feature_plot)
-    if stage == 'give_intersections_intersections':
-        return feature_plot
-
-    Board.board_helpers.give_intersections_edges(feature_plot)
-    if stage == 'give_intersections_edges':
-        return feature_plot
-
-    Board.board_helpers.give_intersections_harbors(feature_plot, valid_harbor_list)
-    if stage == 'give_intersections_harbors':
-        return feature_plot
-    return None
 
 def test_make_feature_plot(intersection_coords_for_tile_list, edge_coords_for_tile_list):
     feature_plot = stage_testing('make_feature_plot')
