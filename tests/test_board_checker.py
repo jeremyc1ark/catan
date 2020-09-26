@@ -1,6 +1,6 @@
 from decorate_all_methods import decorate_all_methods
 import pytest
-from catan.core.board_checker import BoardChecker
+from .context.catan.core.board_checker import BoardChecker
 
 def test_value_handler():
     value_handler_data = {

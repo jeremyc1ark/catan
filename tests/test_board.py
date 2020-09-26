@@ -1,5 +1,5 @@
 import pytest
-from catan.core.board import Board
+from .context.catan.core.board import Board
 from decorate_all_methods import decorate_all_methods
 
 stage_testing = {
