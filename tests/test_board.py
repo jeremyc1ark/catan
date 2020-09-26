@@ -67,6 +67,13 @@ def test_make_feature_plot(intersection_coords_for_tile_list, edge_coords_for_ti
     feature_plot = stage_testing('make_feature_plot')
     edge_plot = feature_plot['edges']
     intersection_plot = feature_plot['intersections']
+    intersection_coords_for_tile_list = ((5,3), (4,3), (3,3), (2,3), (1,3), (6,2),
+        (5,2), (4,2), (3,2), (2,2), (1,2), (0,2), (6,1), (5,1), (4,1), (3,1), (2,1),
+        (1,1), (0,1), (5,0), (4,0), (3,0), (2,0), (1,0))
+    edge_coords_for_tile_list = ((1.5,0), (2.5,0), (3.5,0), (4.5,0), (0.5,1), (1.5,1),
+        (2.5,1), (3.5,1), (4.5,1), (5.5,1), (0.5,2), (1.5,2), (2.5,2), (3.5,2), (4.5,2),
+        (5.5,2), (1.5,3), (2.5,3), (3.5,3), (4.5,3), (1,0.5), (3,0.5), (5,0.5), (0,1.5),
+        (2,1.5), (4,1.5), (6,1.5), (1,2.5), (3,2.5), (5,2.5))
     assert len(edge_plot) == 30
     assert len(intersection_plot) == 24
 
@@ -205,68 +212,3 @@ def test_build_building():
     for elem in illegal_placements:
         assertion_raiser(elem[0], elem[1], elem[2])
 
-@pytest.fixture(scope="module")
-def intersection_coords_for_tile_list():
-    data = (
-        (5,3),
-        (4,3),
-        (3,3),
-        (2,3),
-        (1,3),
-        (6,2),
-        (5,2),
-        (4,2),
-        (3,2),
-        (2,2),
-        (1,2),
-        (0,2),
-        (6,1),
-        (5,1),
-        (4,1),
-        (3,1),
-        (2,1),
-        (1,1),
-        (0,1),
-        (5,0),
-        (4,0),
-        (3,0),
-        (2,0),
-        (1,0)
-    )
-    return data
-
-@pytest.fixture(scope="module")
-def edge_coords_for_tile_list():
-    data = (
-        (1.5,0),
-        (2.5,0),
-        (3.5,0),
-        (4.5,0),
-        (0.5,1),
-        (1.5,1),
-        (2.5,1),
-        (3.5,1),
-        (4.5,1),
-        (5.5,1),
-        (0.5,2),
-        (1.5,2),
-        (2.5,2),
-        (3.5,2),
-        (4.5,2),
-        (5.5,2),
-        (1.5,3),
-        (2.5,3),
-        (3.5,3),
-        (4.5,3),
-        (1,0.5),
-        (3,0.5),
-        (5,0.5),
-        (0,1.5),
-        (2,1.5),
-        (4,1.5),
-        (6,1.5),
-        (1,2.5),
-        (3,2.5),
-        (5,2.5)
-    )
-    return data
