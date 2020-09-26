@@ -1,6 +1,5 @@
 import pytest
 from .context.catan.core.board_components import Tile, Edge, Intersection, Edge, Harbor
-from decorate_all_methods import decorate_all_methods
 
 def test_valid_tile_kind():
     valid_tile_kind_data = {

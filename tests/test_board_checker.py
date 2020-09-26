@@ -1,4 +1,3 @@
-from decorate_all_methods import decorate_all_methods
 import pytest
 from .context.catan.core.board_checker import BoardChecker
 
