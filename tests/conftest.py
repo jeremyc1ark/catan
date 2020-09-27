@@ -2,7 +2,7 @@ from .context.catan.core.board import Board
 from .context.catan.core.board_components import Tile, Harbor
 
 @pytest.fixture
-def starter_board():
+def starter_board_data():
 
     tile_list_blueprint = (
         ((7, 5), 'sheep', 9),
