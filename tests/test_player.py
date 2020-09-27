@@ -27,4 +27,5 @@ def test_longest_road(starter_board_data):
         edge.road = Road(local_player)
         edge.occupant = local_player
 
-    assert local_player.longest_road() == 8
+    assert local_player.longest_road() == 8, \
+        f'local_player.longest_road should return 8 but returns {local_player.longest_road()} instead'
