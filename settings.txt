@@ -1,0 +1,26 @@
+These are the settings that players can modify:
+- Number of victory points (default 7)
+- Tile list 
+- Harbor list
+- Maritime trade amounts (4:1)
+- Build phases in between turns (default False)
+- Number of roads required to get the longest road (default 5)
+- Number of knights required to get largest army (default 3)
+- Dice rolling + tokens (default 2 six-sided die)
+- Costs of resources
+- Number of roads, settlements and buildings players start with
+- Number of players
+- Number of each type of development card
+- Whether harbors can be built surrounded by land
+- Maximum number of trades per turn
+- Whether robber is part of the game
+          - Which number(s) triggers the robber
+          - How many robbers there are
+          - Maximum number of cards without having to discard on robber roll
+          - Whether robber also steals from player who moved it
+- Time limit for turn
+- Time limit for responding to trades
+- Whether players can see each others resource cards
+- Whether players can see each other's development cards
+- Maximum number of structures players can build per turn
+- Maximum number of resources players can play per turn
