@@ -32,7 +32,7 @@ def starter_board_data():
         ((5, 0), 3, None),
         ((6, 0), 3, None),
         ((1, 1), 2, 'brick'),
-        (1, 2), 2'brick'
+        ((1, 2), 2,'brick'),
         (8, 1,2,'sheep'),
         ((9, 1), 2, 'sheep'),
         ((10, 2), 3, None),
