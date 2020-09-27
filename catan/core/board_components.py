@@ -176,11 +176,11 @@ class Edge:
 
         string = f'Edge at ({self.coords[0]}, {self.coords[1]}) {road}' 
         return string
-
+ 
     def road_is_buildable(self, road):
         if not isinstance(self, Road):
             return False
-        if self.road != None:
+        if self.road is not None:
             return False
         
         neighbors = [intersection.occupant for intersection in self.intersections]
@@ -204,29 +204,6 @@ class Edge:
 
     
     def build_road(self, road):
-        assert isinstance(road, Road), \
-            'Argument <road> must be of the Road class'
-        assert self.road == None, \
-            'Cannot build a road on another road'
-
-        neighbors = [intersection.occupant for intersection in self.intersections]
-        neighbors = list(filter(lambda x: x != None, neighbors))
-
-        # Either neighbors is empty or does not have the road owner
-        if road.owner not in neighbors:
-            for intersection in self.intersections:
-                if intersection.occupant == None:
-                    for edge in intersection.surroundings['edges']:
-                        if edge.occupant == road.owner:
-                            self.road = road
-                            self.occupant = road.owner
-            # If this loop ends without updating self.road and self.owner,
-            # the placement is not possible and an AssertionError will be thrown
-            assert self.occupant != None, \
-                'Argument <road> must be directly connected to another ' \
-                'Road or building who is owned by road.owner'
-
-        # Argument <road> is directly connected to a building owned by road.owner
-        else:
-            self.road = road
-            self.occupant = road.owner
+        assert self.road_is_buildable(road)
+        self.road = road
+        self.occupant = road.owner
