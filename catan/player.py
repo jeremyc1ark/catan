@@ -18,43 +18,70 @@ class Player:
         self.board = board
         self.name = name
 
-    def longest_road(self) -> tuple:
-        road_coord_set = set()
-        for edge in self.board.edge_plot.values():
-            if edge.occupant is self:
-                road_coord_set.add(edge.coords)
+    def longest_road_path(self) -> list:
+        all_paths = []
 
-        road_lengths = set()
-
-        def exhaust_pathways(current_coord, coord_set, counter=1, visited=set(), prev_matching_coords=set()):
-            # Creating a local set so as to not mutate the global set
+        # Helper recursion function
+        def exhaust_pathways(current_coord, coord_set, visited=[], prev_matches=set()):
             local_visited = copy.copy(visited)
-
-            local_visited.add(current_coord)
+            local_visited.append(current_coord)
 
             x, y = current_coord[0], current_coord[1]
-            possible_coords = (
-                (x+0.5,y+0.5),
-                (x+0.5,y-0.5),
-                (x-0.5,y+0.5),
-                (x-0.5,y-0.5),
-                (x+1,y),
-                (x-1,y)
-            )
-            matching_coords = set()
-            for coord in possible_coords:
-                if coord in coord_set:
-                    if coord not in local_visited:
-                        if coord not in prev_matching_coords:
-                            matching_coords.add(coord)
+            possible_matches = {(x+1,y), (x-1,y), (x,y+1), (x,y-1)}
 
-            if not matching_coords:
-                road_lengths.add(counter)
+            matches = set()
+            for elem in possible_matches:
+                if elem in coord_set:
+                    if elem not in local_visited:
+                        if elem not in prev_matches:
+                            matches.add(elem)
+
+            if not matches:
+                all_paths.append(local_visited)
             else:
-                for coord in matching_coords:
-                    exhaust_pathways(coord, coord_set, counter+1, local_visited, matching_coords)
+                for match in matches:
+                    exhaust_pathways(match, coord_set, local_visited, matches)
 
-        for coord in road_coord_set:
-            exhaust_pathways(coord, road_coord_set)
+        # Collection of the coordinates intersections
+        # which have one or more of this player's roads connected to them
+        intersection_coord_set = set()
+        for intersection in self.board.intersection_plot.values():
+            for edge in intersection.surroundings['edges']:
+                if edge.occupant is self:
+                    intersection_coord_set.add(intersection.coords)
 
-        return max(road_lengths)
+
+        for coord in intersection_coord_set:
+            exhaust_pathways(coord, intersection_coord_set)
+
+        # Makes a dict where keys are the lengths of their
+        # corresponding paths
+        path_lens = {len(path):path for path in all_paths}
+
+        # Returns the path with the highest length
+        return path_lens[max(path_lens.keys())]
+
+    def longest_road_len(self) -> int:
+        # If the road is a loop, the length will be the
+        # length of the intersection list returned by
+        # self.longest_road_path(). If the length of
+        # the pathway is 2, then the the length will
+        # be one. If it has a distict end and beginning
+        # and has a length greater than 2, it will return
+        # one less than the length of the intersection list
+        # returned by self.longest_road_path().
+
+        pathway = self.longest_road_path()
+
+        # These are the surrounding intersection coordinates
+        # for the final coordinate in the pathway
+        end_intersections = [intersection.coords for intersection in
+        self.board.intersection_plot[pathway[-1]].surroundings['intersections']]
+
+        if len(pathway) == 2:
+            return 1
+        elif pathway[0] in end_intersections:
+            return len(pathway)
+        else:
+            return len(pathway) - 1
+

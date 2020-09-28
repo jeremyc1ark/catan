@@ -29,7 +29,7 @@ import pytest
              (2.5,2), (2.5,3), (2.5,4), (2.5,5),
              (2,4.5), (2,2.5), (4,4.5), (4,2.5),
              (3,3.5), (3,1.5), (2.5,1)],
-            15
+            14
         )
     ]
 )
@@ -42,5 +42,5 @@ def test_longest_road(starter_board_data, road_list, max_len):
         edge = local_player.board.edge_plot[elem]
         edge.road = Road(local_player)
         edge.occupant = local_player
-    assert local_player.longest_road() == max_len, \
-        f'local_player.longest_road should return {max_len} but returns {local_player.longest_road()} instead'
+    assert local_player.longest_road_len() == max_len, \
+        f'local_player.longest_road should return {max_len} but returns {local_player.longest_road_len()} instead'
