@@ -1,5 +1,8 @@
-from .context.catan.core.board import Board
-from .context.catan.core.board_components import Tile, Harbor
+from .context import catan
+from catan.board import Board
+from catan.board_components import Tile, Harbor
+
+import pytest
 
 @pytest.fixture
 def starter_board_data():
@@ -33,7 +36,7 @@ def starter_board_data():
         ((6, 0), 3, None),
         ((1, 1), 2, 'brick'),
         ((1, 2), 2,'brick'),
-        (8, 1,2,'sheep'),
+        ((8, 1),2,'sheep'),
         ((9, 1), 2, 'sheep'),
         ((10, 2), 3, None),
         ((10, 3), 3, None),
