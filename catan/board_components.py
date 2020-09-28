@@ -1,5 +1,5 @@
 from decorate_all_methods import decorate_all_methods
-from board_checker import BoardChecker
+from .board_checker import BoardChecker
 
 class Tile:
 

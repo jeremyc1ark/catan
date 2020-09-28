@@ -1,8 +1,10 @@
+import copy
+
 class Player:
 
     def __init__(self, board, name):
 
-        assert isinstance(board, Board)
+        assert board.__class__.__name__ == 'Board'
         assert isinstance(name, str)
 
         self.data = {
@@ -19,11 +21,17 @@ class Player:
     def longest_road(self) -> tuple:
         road_coord_set = set()
         for edge in self.board.edge_plot.values():
-            if edge.occupant == self:
+            if edge.occupant is self:
                 road_coord_set.add(edge.coords)
 
         road_lengths = set()
-        def exhaust_pathways(current_coord, coord_set, counter=1):
+
+        def exhaust_pathways(current_coord, coord_set, counter=1, visited=set(), prev_matching_coords=set()):
+            # Creating a local set so as to not mutate the global set
+            local_visited = copy.copy(visited)
+
+            local_visited.add(current_coord)
+
             x, y = current_coord[0], current_coord[1]
             possible_coords = (
                 (x+0.5,y+0.5),
@@ -36,18 +44,17 @@ class Player:
             matching_coords = set()
             for coord in possible_coords:
                 if coord in coord_set:
-                    matching_coords.add(coord)
+                    if coord not in local_visited:
+                        if coord not in prev_matching_coords:
+                            matching_coords.add(coord)
 
             if not matching_coords:
                 road_lengths.add(counter)
             else:
-                coord_set.remove(current_coord)
                 for coord in matching_coords:
-                    exhaust_pathways(coord, coord_set, counter+1)
+                    exhaust_pathways(coord, coord_set, counter+1, local_visited, matching_coords)
 
         for coord in road_coord_set:
-            local_coord_set = road_coord_set
-            local_coord_set.remove(coord)
-            exhaust_pathways(coord, local_coord_set)
+            exhaust_pathways(coord, road_coord_set)
 
         return max(road_lengths)

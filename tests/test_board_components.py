@@ -1,5 +1,5 @@
 import pytest
-from .context.catan.core.board_components import Tile, Edge, Intersection, Edge, Harbor
+from .context.catan.board_components import Tile, Edge, Intersection, Edge, Harbor
 
 def test_valid_tile_kind():
     valid_tile_kind_data = {
