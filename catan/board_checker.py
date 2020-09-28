@@ -1,6 +1,7 @@
 from decorate_all_methods import decorate_all_methods
+import math
 
-@decorate_all_methods(staticmethod, exclude=[is_edge_coord, is_intersection_coord])
+@decorate_all_methods(staticmethod, exclude=['is_edge_coord', 'is_intersection_coord'])
 class BoardChecker:
     
     def value_handler(passed_value, valid_args):

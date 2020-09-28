@@ -1,5 +1,5 @@
 import pytest
-from .context.catan.core.board import Board
+from .context.catan.board import Board
 
 stage_testing = {
     "make_feature_plot": None,
