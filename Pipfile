@@ -8,6 +8,12 @@ verify_ssl = true
 [packages]
 pytest = "*"
 decorate-all-methods = "*"
+flake8 = "*"
+autoflake = "*"
+epc = "*"
+importmagic = "*"
+python-language-server = {extras = ["all"], version = "*"}
+ptvsd = ">=4.2"
 
 [requires]
 python_version = "3.8"
