@@ -43,10 +43,15 @@ class Player:
         needs information about its past iterations and the current
         intersection. Therefore, it can be called with just a single
         intersection at the beginning, since it has no stack.
+        If current_intersection has a structure on it that is not
+        owned by the player, then _exhaust_pathways will terminate.
         """
 
         local_visited = copy.copy(visited)
         local_visited.append(current_intersection)
+
+        if current_intersection.owner is not self:
+            yield local_visited
 
         matches = set()
 
