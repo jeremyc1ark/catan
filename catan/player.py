@@ -50,8 +50,6 @@ class Player:
         local_visited = copy.copy(visited)
         local_visited.append(current_intersection)
 
-        if current_intersection.owner is not self:
-            yield local_visited
 
         matches = set()
 
@@ -66,6 +64,8 @@ class Player:
                         matches.add(connecting_intersection)
 
         if not matches:
+            yield local_visited
+        elif current_intersection.owner is not self:
             yield local_visited
         else:
             for match in matches:
