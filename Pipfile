@@ -15,6 +15,7 @@ importmagic = "*"
 python-language-server = {extras = ["all"], version = "*"}
 ptvsd = ">=4.2"
 pylint = "*"
+pytest-dependency = "*"
 
 [requires]
 python_version = "3.8"

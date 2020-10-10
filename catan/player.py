@@ -1,5 +1,6 @@
 import copy
 
+
 class Player:
 
     def __init__(self, board, name):
@@ -22,8 +23,7 @@ class Player:
     def _exhaust_pathways(
             current_intersection,
             visited=[],
-            prev_matches = set()
-    ):
+            prev_matches=set()):
         """
         Helper recursion function for longest_road_path. Global in class
         to make it testable. Given a starting coordinate, _exhaust_pathways
@@ -49,7 +49,6 @@ class Player:
 
         local_visited = copy.copy(visited)
         local_visited.append(current_intersection)
-
 
         matches = set()
 
