@@ -1,13 +1,12 @@
 from decorate_all_methods import decorate_all_methods
 
 from .board_checker import BoardChecker
-from .board_components import Tile, Edge, Harbor, Intersection
+from .board_components import Edge, Harbor, Intersection, Tile
+
 
 class Board:
-
     @decorate_all_methods(staticmethod)
     class board_helpers:
-
         def check_overlap(tile_list):
             assert isinstance(tile_list, list) or isinstance(tile_list, tuple), \
                 'Argument <tile_list> must be of type list or tuple'
@@ -19,9 +18,9 @@ class Board:
                 tile_coords.append(tile.coords)
 
                 x, y = tile.coords[0], tile.coords[1]
-                off_limit_coords.append((x+1,y))
-                off_limit_coords.append((x-1,y))
-                off_limit_coords.append((x,y-1))
+                off_limit_coords.append((x + 1, y))
+                off_limit_coords.append((x - 1, y))
+                off_limit_coords.append((x, y - 1))
 
             assert len(set(tile_coords)) == len(tile_coords), \
                 'Argument <tile_list> has two tiles with the same coordinates'
@@ -40,15 +39,21 @@ class Board:
                 for coord in tile.edge_coords():
                     edge_coord_set.add(coord)
 
-            intersection_plot = {coord:Intersection(coord) for coord in intersection_coord_set}
+            intersection_plot = {
+                coord: Intersection(coord)
+                for coord in intersection_coord_set
+            }
             # Passing intersection_plot into edge creates the intersection list for that edge
             # upon instantiation
-            edge_plot = {coord:Edge(coord, intersection_plot) for coord in edge_coord_set}
+            edge_plot = {
+                coord: Edge(coord, intersection_plot)
+                for coord in edge_coord_set
+            }
             return {'intersections': intersection_plot, 'edges': edge_plot}
 
         def give_intersections_tiles(tile_list, feature_plot):
             intersection_plot = feature_plot['intersections']
-            for k,v in intersection_plot.items():
+            for k, v in intersection_plot.items():
                 for tile in tile_list:
                     if k in tile.intersection_coords():
                         v.surroundings['tiles'].append(tile)
@@ -56,20 +61,18 @@ class Board:
         def give_intersections_intersections(feature_plot):
             intersection_plot = feature_plot['intersections']
             edge_plot = feature_plot['edges']
-            for k,v in intersection_plot.items():
+            for k, v in intersection_plot.items():
                 x, y = k[0], k[1]
                 pathways = {
-                    (x+0.5,y):(x+1,y),
-                    (x-0.5,y):(x-1,y),
-                    (x,y+0.5):(x,y+1),
-                    (x,y-0.5):(x,y-1)
+                    (x + 0.5, y): (x + 1, y),
+                    (x - 0.5, y): (x - 1, y),
+                    (x, y + 0.5): (x, y + 1),
+                    (x, y - 0.5): (x, y - 1)
                 }
                 for pathway, end in pathways.items():
                     if pathway in edge_plot.keys():
                         v.surroundings['intersections'].append(
-                            intersection_plot[pathways[pathway]]
-                        )
-
+                            intersection_plot[pathways[pathway]])
 
         def give_intersections_edges(feature_plot):
             edge_plot = feature_plot['edges']
@@ -88,7 +91,6 @@ class Board:
 
     @decorate_all_methods(staticmethod)
     class LocalChecker:
-
         def is_tile_list(passed_value):
             assert isinstance(passed_value, list) or isinstance(passed_value, tuple), \
                 f'{passed_value} must be of types list or tuple'
@@ -109,7 +111,7 @@ class Board:
             assert isinstance(passed_value, dict), \
                 f'{passed_value} must be of type dict'
 
-            for k,v in passed_value:
+            for k, v in passed_value:
                 assert BoardChecker.is_intersection_coord(k), \
                     f'{k} is not a valid key for an intersection'
                 assert isinstance(v, Intersection), \
@@ -119,7 +121,7 @@ class Board:
             assert isinstance(passed_value, dict), \
                 f'{passed_value} must be of type dict'
 
-            for k,v in passed_value:
+            for k, v in passed_value:
                 assert BoardChecker.is_edge_coord(k), \
                     f'{k} is not a valid key for an edge'
                 assert isinstance(v, Edge), \
@@ -143,7 +145,7 @@ class Board:
             self.is_edge_plot(passed_value['edges'])
 
     def __init__(self, tile_list, harbor_list):
-        
+
         self.LocalChecker.is_harbor_list(harbor_list)
         self.LocalChecker.is_tile_list(tile_list)
 
@@ -152,10 +154,9 @@ class Board:
         self.board_helpers.give_intersections_tiles(tile_list, feature_plot)
         self.board_helpers.give_intersections_intersections(feature_plot)
         self.board_helpers.give_intersections_edges(feature_plot)
-        
+
         self.feature_plot = feature_plot
         self.intersection_plot = feature_plot['intersections']
         self.edge_plot = feature_plot['edges']
         self.tile_list = tile_list
         self.harbor_list = harbor_list
-

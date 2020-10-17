@@ -30,7 +30,6 @@ def is_coord(val: Any) -> bool:
     Args:
         val: The value which you want to confirm is a coordinate
     """
-
     is_tuple = isinstance(val, tuple)
     is_len_2 = len(val) == 2
     has_only_nums = all(
@@ -247,3 +246,42 @@ def is_city(val: Any) -> bool:
         return False
 
     return has_valid_owner_name and has_valid_coord and has_valid_kind
+
+
+def is_tile(val: Any) -> bool:
+    """Returns whether val is a tile
+
+    A tile looks like the following:
+    {'kind': 'tile',
+     'tile_type': <tile type>,
+     'token': <token>,
+     'coord': <coord>}
+    Where <tile_type> is in
+    ('desert', 'wood', 'ore', 'sheep', 'brick', 'wheat')
+    Where <token> is in
+    (2, 3, 4, 5, 6, 8, 9, 10, 11, 12, None)
+    Where <coord> is a value that returns True
+    when passed into is_intersection_coord
+
+    Args:
+        val: The value which you want to confirm is a tile
+
+    Dependent on:
+        is_intersection_coord(val)
+    """
+
+    tile_types = {'desert', 'wood', 'ore', 'sheep', 'brick', 'wheat'}
+    token_types = {2, 3, 4, 5, 6, 8, 9, 10, 11, 12, None}
+
+    try:
+        has_valid_kind = val['kind'] == 'tile'
+        has_valid_tile_type = val['tile_type'] in tile_types
+        has_valid_token_type = val['token'] in token_types
+        has_valid_coord = is_intersection_coord(val['coord'])
+    except (KeyError, TypeError):
+        return False
+
+    return has_valid_kind and \
+        has_valid_tile_type and \
+        has_valid_token_type and \
+        has_valid_coord
